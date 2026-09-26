@@ -1,7 +1,10 @@
 import { useState } from "react"
+import { Link, useLocation} from "wouter";
+
 export default function Navbar() {
 
     const [isNavbarShowing, setNavbarShowing] = useState(false);
+    const [location] = useLocation();
 
     const toggleNavBar = () => {
         setNavbarShowing(!isNavbarShowing);
@@ -25,16 +28,13 @@ export default function Navbar() {
             }`} id="navbarNav">
                 <ul className="navbar-nav ms-auto">
                     <li className="nav-item">
-                        <a className="nav-link active" aria-current="page" href="#">Home</a>
+                        <Link className={`nav-link ${location==="/" ? "active": ""}`} aria-current="page" href="/">Home</Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#">Products</a>
+                        <Link className={`nav-link ${location==="/products" ? "active": ""}`} href="/products">Products</Link>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#">About</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#">Contact</a>
+                        <Link className={`nav-link ${location==="/register" ? "active": ""}`}href="/register">Register</Link>
                     </li>
                 </ul>
             </div>
