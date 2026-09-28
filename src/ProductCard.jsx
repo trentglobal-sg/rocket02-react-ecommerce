@@ -1,6 +1,6 @@
 export default function ProductCard(props) {
     return (
-        <div className="card">
+        <div className="card h-100">
             <img
                 src={props.imageUrl}
                 className="card-img-top"
