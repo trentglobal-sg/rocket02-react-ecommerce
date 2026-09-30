@@ -1,0 +1,24 @@
+.flash-alert {
+    position: fixed;
+    top: 5px;
+    left: 10px;
+    width: calc(99vw - 20px);
+    z-index: 100;
+
+    opacity: 1;
+    animation: fadeOut 6s ease forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0
+    }
+}

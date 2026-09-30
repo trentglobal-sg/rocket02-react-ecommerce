@@ -1,6 +1,8 @@
 import React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useLocation} from 'wouter';
+import { useFlashMessage } from './FlashMessageStore';
 
 const marketingPreferences = [
   {
@@ -34,6 +36,15 @@ const validationSchema = Yup.object({
 
 function RegisterPage() {
 
+  // when using React hooks, make sure they are called first
+  // at the start of the component function
+  // do not react hooks in a if/while.
+  const {showMessage} = useFlashMessage();
+
+
+  // ge the setLocation from the useLocation hook
+  const [, setLocation] = useLocation();
+
   const initialValues = {
     name: "",
     email: "",
@@ -49,7 +60,14 @@ function RegisterPage() {
     // todo: call a RESTFul Endpoint to actually create the user
     setTimeout(() => {
       formikHelpers.setSubmitting(false);
+      
+      showMessage("Register successful", "success")
+
+      // change the current route to /
+      setLocation("/");
     }, 3000);
+
+
   }
 
   return (

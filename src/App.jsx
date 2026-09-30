@@ -3,10 +3,20 @@ import HomePage from "./HomePage";
 import { Route, Switch } from 'wouter'
 import ProductPage from "./ProductPage";
 import RegisterPage from "./RegisterPage";
+import FlashMessage from "./FlashMessage";
+
+import "./App.css";
+
 
 function App() {
+
+
+
   return <>
+    
     <Navbar />
+  
+    <FlashMessage/>
 
     {/* The <Switch> is part of the screen that will change depending on the URL */}
     <Switch>
