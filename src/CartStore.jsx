@@ -12,9 +12,17 @@ const initialCart = [
     }
 ]
 
+// create an atom
+// an atom is state that can be shared across multiple components
 const cartAtom = atom(initialCart);
 
+// create a hook
+// a hook is a function that returns other functions or values
+// it is used to share functions and values across components
 export const useCart = () => {
+    // gain access to the atom
+    // cart -> current value of the atom
+    // setCart -> mutator function to change the atom
     const [cart, setCart] = useAtom(cartAtom);
 
     const getCartTotal = () => {
@@ -25,6 +33,7 @@ export const useCart = () => {
         return total;
     }
 
+    // add business logic and centralize it here
     const addToCart = (product) => {
         // findIndex returns -1 when not found
         const existingItemIndex = cart.findIndex(item => item.product_id === product.id);
@@ -59,9 +68,33 @@ export const useCart = () => {
 
     }
 
+    // the item parameer is the cart item we want to remove
+    const removeFromCart = (item) => {
+        // toSplice works like the splice function it will
+        // modify a copy of the array and returns that
+        const index = cart.findIndex(i => i.id === item.id);
+        const modifiedCart = cart.toSpliced(index, 1);
+        setCart(modifiedCart);
+    }
+
+    const modifyQuantity = (item, newQuantity) => {
+        if (newQuantity < 1) {
+            return;
+        }
+        const index = cart.findIndex(i => i.id === item.id);
+        const originalCartItem = cart[index];
+        const modifiedCartItem = {
+            ...originalCartItem, quantity: newQuantity
+        }
+        const modifiedCart = cart.with(index, modifiedCartItem);
+        setCart(modifiedCart);
+    }
+
     return {
-        cart,
-        getCartTotal,
-        addToCart
+        cart,  // <- current item in the shopping cart
+        getCartTotal, // <- func to calculate the total price
+        addToCart,  // <- add an item to a shopping cart
+        removeFromCart,
+        modifyQuantity
     }
 }

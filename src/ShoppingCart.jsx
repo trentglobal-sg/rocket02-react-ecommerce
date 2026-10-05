@@ -1,7 +1,7 @@
 import { useCart } from "./CartStore";
 
 export default function ShoppingCart() {
-    const { getCartTotal, cart } = useCart();
+    const { getCartTotal, cart, removeFromCart, modifyQuantity } = useCart();
 
     return (
         <div className="container mt-4">
@@ -11,22 +11,51 @@ export default function ShoppingCart() {
                     <p>Empty Shopping Cart</p> :
                     (<>
                         <ul className="list-group">
-                        {
-                            cart.map(item=>(
-                                <li key={item.id} className="list-group-item d-md-flex justify-content-between">
-                                    <div>
-                                        <h5>{item.name}</h5>
-                                        <p>Quantity: {item.quantity}</p>
-                                    </div>
-                                    <div>
-                                        <img src={item.imageUrl}/>
-                                    </div>
-                                    <div>
-                                        <span>${(item.price * item.quantity).toFixed(2)}</span>
-                                    </div>
-                                </li>
-                            ))
-                        }
+                            {
+                                cart.map(item => (
+                                    <li key={item.id} className="list-group-item d-md-flex justify-content-between">
+                                        <div>
+                                            <h5>{item.name}</h5>
+                                            <p>
+                                                <button class="btn btn-primary btn-sm m-1"
+                                                    onClick={()=>{
+                                                        modifyQuantity(item, item.quantity -1);
+                                                    }}
+                                                >-</button>
+                                                Quantity: 
+                                                
+                                                <input type="text" style={{maxWidth: "35px"}} 
+                                                    onChange={(e)=>{
+                                                        if (!isNaN(e.target.value) && e.target.value >= 0){
+                                                            modifyQuantity(item, e.target.value);
+                                                        }
+                                                    }}
+                                                    value={item.quantity}/>
+                    
+                                                <button class="btn btn-primary btn-sm m-1"
+                                                    onClick={()=>{
+                                                        modifyQuantity(item, item.quantity + 1)
+                                                    }}
+                                                >+</button>
+                                            </p>
+                                            <div>
+                                                <button class="btn btn-danger btn-sm"
+                                                    onClick={()=>{
+                                                        removeFromCart(item)
+                                                    }}
+                                                >Remove</button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <img src={item.imageUrl} />
+                                        </div>
+                                        <div>
+                                            <span>${(item.price * item.quantity).toFixed(2)}</span>
+
+                                        </div>
+                                    </li>
+                                ))
+                            }
 
                         </ul>
                         <div className="mt-3 mb-3 text-end">
