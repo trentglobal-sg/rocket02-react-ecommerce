@@ -1,7 +1,17 @@
 import { useCart } from "./CartStore";
+import CartQuantity from "./CartQuantity";
+import { useJWT } from "./UserStore";
+import { useEffect } from "react";
 
 export default function ShoppingCart() {
-    const { getCartTotal, cart, removeFromCart, modifyQuantity } = useCart();
+    const { getCartTotal, cart, removeFromCart, modifyQuantity, fetchCart } = useCart();
+    const { jwt} = useJWT();
+
+    useEffect(()=>{
+        if (jwt) {
+            fetchCart();
+        }
+    }, [])
 
     return (
         <div className="container mt-4">
@@ -24,13 +34,20 @@ export default function ShoppingCart() {
                                                 >-</button>
                                                 Quantity: 
                                                 
-                                                <input type="text" style={{maxWidth: "35px"}} 
+                                                {/* <input type="text" style={{maxWidth: "35px"}} 
                                                     onChange={(e)=>{
                                                         if (!isNaN(e.target.value) && e.target.value >= 0){
                                                             modifyQuantity(item, e.target.value);
                                                         }
                                                     }}
-                                                    value={item.quantity}/>
+                                                    value={item.quantity}/> */}
+
+                                                <CartQuantity item={item}
+                                                    onUpdateValue={(newQuantity)=>{
+                                                        modifyQuantity(item, newQuantity)
+                                                    }}
+                                                
+                                                />
                     
                                                 <button class="btn btn-primary btn-sm m-1"
                                                     onClick={()=>{

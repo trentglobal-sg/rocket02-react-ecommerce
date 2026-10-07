@@ -1,8 +1,9 @@
 import React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useLocation} from 'wouter';
+import { useLocation } from 'wouter';
 import { useFlashMessage } from './FlashMessageStore';
+import axios from 'axios';
 
 const marketingPreferences = [
   {
@@ -39,7 +40,7 @@ function RegisterPage() {
   // when using React hooks, make sure they are called first
   // at the start of the component function
   // do not react hooks in a if/while.
-  const {showMessage} = useFlashMessage();
+  const { showMessage } = useFlashMessage();
 
 
   // ge the setLocation from the useLocation hook
@@ -54,19 +55,22 @@ function RegisterPage() {
     marketingPreferences: []
   }
 
-  const handleSubmit = (values, formikHelpers) => {
-    console.log(values);
+  const handleSubmit = async (values, formikHelpers) => {
 
-    // todo: call a RESTFul Endpoint to actually create the user
-    setTimeout(() => {
+    try {
+
+      await axios.post(import.meta.env.VITE_API_URL + '/users/register', values);
+
       formikHelpers.setSubmitting(false);
-      
       showMessage("Register successful", "success")
 
       // change the current route to /
       setLocation("/");
-    }, 3000);
 
+    } catch (e) {
+      console.error(e);
+      showMessage("Unable to register, please try again later", "danger")
+    }
 
   }
 
@@ -91,7 +95,7 @@ function RegisterPage() {
                   id="name"
                   name="name" />
               </div>
-              <ErrorMessage name="name" component="div" className="text-danger"/>
+              <ErrorMessage name="name" component="div" className="text-danger" />
 
               {/* Email */}
               <div className="mb-3">
@@ -101,7 +105,7 @@ function RegisterPage() {
                   id="name"
                   name="email" />
               </div>
-              <ErrorMessage name="email" component="div" className="text-danger"/>
+              <ErrorMessage name="email" component="div" className="text-danger" />
 
               {/* Password */}
               <div className="mb-3">
@@ -111,7 +115,7 @@ function RegisterPage() {
                   id="password"
                   name="password" />
               </div>
-              <ErrorMessage name="password" component="div" className="text-danger"/>
+              <ErrorMessage name="password" component="div" className="text-danger" />
 
 
               {/* Confirm Password */}
@@ -122,7 +126,7 @@ function RegisterPage() {
                   id="confirmPassword"
                   name="confirmPassword" />
               </div>
-              <ErrorMessage name="confirmPassword" component="div" className="text-danger"/>
+              <ErrorMessage name="confirmPassword" component="div" className="text-danger" />
 
               {/* Salutation */}
               <div className="mb-3">
@@ -160,7 +164,7 @@ function RegisterPage() {
                   </div>
                 </div>
               </div>
-              <ErrorMessage name="salutation" component="div" className="text-danger"/>
+              <ErrorMessage name="salutation" component="div" className="text-danger" />
 
 
               {/* Checkboxes */}
@@ -178,7 +182,7 @@ function RegisterPage() {
                         id={`marketing-preferences-${p.id}`}
                       />
                       <label className="form-check-label">
-                         {p.name}
+                        {p.name}
                       </label>
                     </div>)
                   })

@@ -1,15 +1,9 @@
 import { atom, useAtom } from 'jotai';
+import axios from 'axios';
+import { useJWT } from './UserStore';
 
 const initialCart = [
-    {
-        "id": 1,
-        "product_id": 1,
-        "quantity": 11,
-        "name": "Organic Green Tea",
-        "price": 12.99,
-        "imageUrl": "https://picsum.photos/id/225/300/200",
-        "description": "Premium organic green tea leaves, rich in antioxidants and offering a smooth, refreshing taste."
-    }
+
 ]
 
 // create an atom
@@ -24,6 +18,23 @@ export const useCart = () => {
     // cart -> current value of the atom
     // setCart -> mutator function to change the atom
     const [cart, setCart] = useAtom(cartAtom);
+
+    const {jwt} = useJWT();
+
+    const fetchCart = async () => {
+        try {
+            const response = await axios.get(
+                import.meta.env.VITE_API_URL+'/cart', {
+                    headers: {
+                        Authorization: "Bearer " + jwt
+                    }
+                }
+            )
+            setCart(response.data)
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
     const getCartTotal = () => {
         let total = 0;
@@ -50,6 +61,7 @@ export const useCart = () => {
             }
             const modifiedCart = [...cart, newCartItem];
             setCart(modifiedCart);
+            updateCart(modifiedCart);
         } else {
             // how to update an object properly in JavaScript + React
             // 1. clone the object
@@ -64,6 +76,7 @@ export const useCart = () => {
             // .with will return a modified copy of the original array
             const modifiedCart = cart.with(existingItemIndex, cloned);
             setCart(modifiedCart);
+            updateCart(modifiedCart)
         }
 
     }
@@ -75,10 +88,11 @@ export const useCart = () => {
         const index = cart.findIndex(i => i.id === item.id);
         const modifiedCart = cart.toSpliced(index, 1);
         setCart(modifiedCart);
+        updateCart(modifiedCart);
     }
 
     const modifyQuantity = (item, newQuantity) => {
-        if (newQuantity < 1) {
+        if (newQuantity < 0) {
             return;
         }
         const index = cart.findIndex(i => i.id === item.id);
@@ -88,6 +102,27 @@ export const useCart = () => {
         }
         const modifiedCart = cart.with(index, modifiedCartItem);
         setCart(modifiedCart);
+        updateCart(modifiedCart);
+    }
+
+    const updateCart = async function(updatedCart) {
+        try {
+            const cartItems = updatedCart.map(item=>({
+                product_id: item.product_id,
+                quantity: item.quantity
+            }));
+
+            await axios.put(import.meta.env.VITE_API_URL + "/cart", {
+                cart_items: cartItems
+            }, {
+                headers:{
+                    Authorization: "Bearer " + jwt
+                }
+            })
+
+        } catch(e) {
+            console.error(e);
+        }
     }
 
     return {
@@ -95,6 +130,7 @@ export const useCart = () => {
         getCartTotal, // <- func to calculate the total price
         addToCart,  // <- add an item to a shopping cart
         removeFromCart,
-        modifyQuantity
+        modifyQuantity,
+        fetchCart
     }
 }

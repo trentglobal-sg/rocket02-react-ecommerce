@@ -5,8 +5,10 @@ import ProductPage from "./ProductPage";
 import RegisterPage from "./RegisterPage";
 import FlashMessage from "./FlashMessage";
 import ShoppingCart from "./ShoppingCart";
+import LoginPage from "./LoginPage";
 
 import "./App.css";
+
 
 
 function App() {
@@ -25,6 +27,7 @@ function App() {
       <Route path="/products" component={ProductPage}/>
       <Route path="/register" component={RegisterPage}/>
       <Route path="/cart" component={ShoppingCart}/>
+      <Route path="/login" component={LoginPage}/>
     </Switch>
 
     <footer className="bg-dark text-white text-center py-3">
